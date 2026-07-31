@@ -1,0 +1,76 @@
+<div class="card" style="max-width: 680px;">
+  <h1>{{ listingId ? 'Edit rental' : 'Post a rental' }}</h1>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="category">Category</label>
+      <select id="category" formControlName="category">
+        @for (category of categories; track category) {
+          <option [value]="category">{{ category }}</option>
+        }
+      </select>
+    </div>
+    <div class="field">
+      <label for="title">Title</label>
+      <input id="title" formControlName="title" placeholder="Honda Activa 6G, 2BHK flat, ..." />
+    </div>
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea id="description" rows="3" formControlName="description"></textarea>
+    </div>
+    <div class="row">
+      <div class="field" style="flex: 1 1 160px;">
+        <label for="pricePerDay">Price per day</label>
+        <input id="pricePerDay" type="number" min="0" formControlName="pricePerDay" />
+      </div>
+      <div class="field" style="flex: 1 1 160px;">
+        <label for="contactPhone">Contact phone</label>
+        <input id="contactPhone" formControlName="contactPhone" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field" style="flex: 1 1 200px;">
+        <label for="areaName">Area</label>
+        <input id="areaName" formControlName="areaName" placeholder="Gachibowli" />
+      </div>
+      <div class="field" style="flex: 1 1 160px;">
+        <label for="city">City</label>
+        <input id="city" formControlName="city" placeholder="Hyderabad" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="addressLine">Address</label>
+      <input id="addressLine" formControlName="addressLine" />
+    </div>
+
+    <div class="row">
+      <div class="field" style="flex: 1 1 160px;">
+        <label for="latitude">Latitude</label>
+        <input id="latitude" type="number" formControlName="latitude" />
+      </div>
+      <div class="field" style="flex: 1 1 160px;">
+        <label for="longitude">Longitude</label>
+        <input id="longitude" type="number" formControlName="longitude" />
+      </div>
+      <button class="btn secondary" type="button" [disabled]="locating()" (click)="captureLocation()">
+        Use current location
+      </button>
+      <button class="btn secondary" type="button" [disabled]="locating()" (click)="locateArea()">
+        Locate typed area
+      </button>
+    </div>
+
+    <div class="field">
+      <label>
+        <input type="checkbox" formControlName="available" style="width: auto;" />
+        Available for rent
+      </label>
+    </div>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+    <button class="btn" type="submit" [disabled]="saving()">
+      {{ saving() ? 'Saving...' : 'Save listing' }}
+    </button>
+  </form>
+</div>

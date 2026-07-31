@@ -1,0 +1,23 @@
+<header class="topbar">
+  <a class="brand" routerLink="/search">LocalRent</a>
+  <nav>
+    <a routerLink="/search" routerLinkActive="active">Find rentals</a>
+    @if (auth.isOwner()) {
+      <a routerLink="/my-listings" routerLinkActive="active">My listings</a>
+      <a routerLink="/listings/new" routerLinkActive="active">Post rental</a>
+    }
+  </nav>
+  <div class="account">
+    @if (auth.isLoggedIn()) {
+      <span class="who">{{ auth.user()?.name }} ({{ auth.user()?.role }})</span>
+      <button type="button" class="link" (click)="logout()">Logout</button>
+    } @else {
+      <a routerLink="/login">Login</a>
+      <a class="cta" routerLink="/signup">Sign up</a>
+    }
+  </div>
+</header>
+
+<main class="page">
+  <router-outlet />
+</main>

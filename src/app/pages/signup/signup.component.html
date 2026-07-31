@@ -1,0 +1,36 @@
+<div class="card" style="max-width: 460px; margin: 0 auto;">
+  <h1>Create your account</h1>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="role">I want to</label>
+      <select id="role" formControlName="role">
+        <option value="SEEKER">Find rentals</option>
+        <option value="OWNER">List my bike / car / property</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="name">Full name</label>
+      <input id="name" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+    </div>
+    <div class="field">
+      <label for="phone">Phone</label>
+      <input id="phone" formControlName="phone" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password" />
+      <span class="hint">At least 6 characters</span>
+    </div>
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+    <button class="btn" type="submit" [disabled]="loading()">
+      {{ loading() ? 'Creating...' : 'Sign up' }}
+    </button>
+  </form>
+  <p class="hint">Already registered? <a routerLink="/login">Log in</a></p>
+</div>

@@ -1,0 +1,65 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 24px;
+  background: #10312b;
+  color: #fff;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+}
+
+nav {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+nav a,
+.account a {
+  color: #d7ece5;
+  text-decoration: none;
+}
+
+nav a.active {
+  color: #fff;
+  font-weight: 600;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.who {
+  font-size: 13px;
+  color: #b9d8cf;
+}
+
+.cta {
+  background: #38b48b;
+  color: #05221c !important;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+button.link {
+  background: none;
+  border: none;
+  color: #d7ece5;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px;
+}

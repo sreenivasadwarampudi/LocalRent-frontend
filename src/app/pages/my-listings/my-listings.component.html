@@ -1,0 +1,27 @@
+<div class="row" style="justify-content: space-between;">
+  <h1>My listings</h1>
+  <a class="btn" routerLink="/listings/new">Post a rental</a>
+</div>
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+@if (items().length === 0) {
+  <p class="hint">You have not posted any rentals yet.</p>
+}
+
+<div class="grid">
+  @for (item of items(); track item.id) {
+    <div class="card">
+      <h3 style="margin: 0 0 6px;">{{ item.title }}</h3>
+      <p class="hint" style="margin: 0 0 6px;">{{ item.category }} &middot; {{ item.areaName }}</p>
+      <p style="margin: 0 0 10px;">{{ item.pricePerDay | number: '1.0-2' }} / day</p>
+      <p class="hint">{{ item.available ? 'Available' : 'Unavailable' }}</p>
+      <div class="row">
+        <a class="btn secondary" [routerLink]="['/listings', item.id, 'edit']">Edit</a>
+        <button class="btn danger" type="button" (click)="remove(item)">Delete</button>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,20 @@
+<div class="card" style="max-width: 420px; margin: 0 auto;">
+  <h1>Log in</h1>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password" />
+    </div>
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+    <button class="btn" type="submit" [disabled]="loading()">
+      {{ loading() ? 'Logging in...' : 'Log in' }}
+    </button>
+  </form>
+  <p class="hint">No account? <a routerLink="/signup">Sign up</a></p>
+</div>

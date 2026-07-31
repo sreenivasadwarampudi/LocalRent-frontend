@@ -1,0 +1,61 @@
+<h1>Find rentals near you</h1>
+
+<div class="card">
+  <div class="row">
+    <div style="flex: 1 1 200px;">
+      <label for="category">Category</label>
+      <select id="category" [(ngModel)]="category">
+        @for (option of categories; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+    <div style="flex: 2 1 240px;">
+      <label for="area">Area / city</label>
+      <input id="area" [(ngModel)]="area" placeholder="e.g. Gachibowli, Hyderabad" />
+    </div>
+    <div style="flex: 0 1 130px;">
+      <label for="radius">Radius (km)</label>
+      <input id="radius" type="number" min="1" max="100" [(ngModel)]="radiusKm" />
+    </div>
+    <div style="flex: 0 1 140px;">
+      <label for="maxPrice">Max price/day</label>
+      <input id="maxPrice" type="number" min="0" [(ngModel)]="maxPrice" />
+    </div>
+    <button class="btn" type="button" (click)="search()">Search</button>
+    <button class="btn secondary" type="button" (click)="useMyLocation()">Use my location</button>
+  </div>
+
+  @if (locationLabel()) {
+    <p class="hint">
+      {{ locationLabel() }}
+      <button class="btn secondary" type="button" (click)="clearLocation()">Clear</button>
+    </p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+</div>
+
+@if (loading()) {
+  <p class="hint">Searching...</p>
+} @else if (searched() && results().length === 0) {
+  <p class="hint">No rentals found. Try a wider radius or another area.</p>
+}
+
+<div class="grid" style="margin-top: 20px;">
+  @for (listing of results(); track listing.id) {
+    <a class="card" style="text-decoration: none; color: inherit;" [routerLink]="['/listings', listing.id]">
+      <h3 style="margin: 0 0 6px;">{{ listing.title }}</h3>
+      <p class="hint" style="margin: 0 0 8px;">
+        {{ listing.category }} &middot; {{ listing.areaName }}@if (listing.city) {, {{ listing.city }}}
+      </p>
+      <p style="margin: 0 0 6px; font-weight: 600;">
+        {{ listing.pricePerDay | number: '1.0-2' }} / day
+      </p>
+      @if (listing.distanceKm != null) {
+        <p class="hint" style="margin: 0;">{{ listing.distanceKm | number: '1.0-2' }} km away</p>
+      }
+    </a>
+  }
+</div>
