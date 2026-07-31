@@ -1,27 +1,31 @@
-# LocalRentFrontend
+# LocalRent Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.21.
+Angular 18 (standalone components) frontend for LocalRent — local rentals for bikes, cars and properties.
 
-## Development server
+## Requirements
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js 18.19+ / 20+
+- The [LocalRent backend](https://github.com/sreenivasadwarampudi/LocalRent-backend) running on http://localhost:8080
 
-## Code scaffolding
+## Run
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+npm install
+npm start
+```
+
+App runs on http://localhost:4200. The API base URL lives in `src/environments/environment.ts`.
+
+## Features
+
+- Sign up as **owner** (post rentals) or **seeker** (find rentals); JWT stored in `localStorage`.
+- Owners: post/edit/delete listings, set location by capturing browser geolocation, geocoding the typed
+  area (OpenStreetMap Nominatim), or entering latitude/longitude manually.
+- Seekers: search by category, price and either "Use my location" (default 20 km radius, adjustable) or a
+  typed area name. Results show distance in km, nearest first.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npm run build
+```
