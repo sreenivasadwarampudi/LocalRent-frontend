@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CATEGORY_GROUPS } from '../../categories';
 import { RentalCategory } from '../../models';
 import { GeolocationService } from '../../services/geolocation.service';
 import { ListingService } from '../../services/listing.service';
@@ -23,7 +24,7 @@ export class ListingFormComponent {
   readonly saving = signal(false);
   readonly locating = signal(false);
 
-  readonly categories: RentalCategory[] = ['BIKE', 'CAR', 'PROPERTY'];
+  readonly categoryGroups = CATEGORY_GROUPS;
 
   readonly form = this.fb.nonNullable.group({
     title: ['', [Validators.required]],

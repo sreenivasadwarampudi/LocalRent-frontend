@@ -1,9 +1,10 @@
 <div class="card" style="max-width: 420px; margin: 0 auto;">
-  <h1>Log in</h1>
+  <h1>Owner log in</h1>
+  <p class="hint">Only rental owners need an account. Searching is open to everyone.</p>
   <form [formGroup]="form" (ngSubmit)="submit()">
     <div class="field">
-      <label for="email">Email</label>
-      <input id="email" type="email" formControlName="email" />
+      <label for="phone">Mobile number</label>
+      <input id="phone" type="tel" inputmode="tel" formControlName="phone" placeholder="9876543210" />
     </div>
     <div class="field">
       <label for="password">Password</label>
@@ -16,5 +17,5 @@
       {{ loading() ? 'Logging in...' : 'Log in' }}
     </button>
   </form>
-  <p class="hint">No account? <a routerLink="/signup">Sign up</a></p>
+  <p class="hint">Want to rent out your vehicle or equipment? <a routerLink="/signup">Create an owner account</a></p>
 </div>

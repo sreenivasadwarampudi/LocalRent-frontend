@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, ownerGuard } from './auth.guard';
+import { ownerGuard } from './auth.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'search' },
@@ -35,7 +35,6 @@ export const routes: Routes = [
   },
   {
     path: 'listings/:id',
-    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/listing-detail/listing-detail.component').then((m) => m.ListingDetailComponent)
   },

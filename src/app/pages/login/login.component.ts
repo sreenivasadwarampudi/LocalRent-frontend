@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { PHONE_PATTERN } from '../../validators';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent {
   readonly loading = signal(false);
 
   readonly form = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
+    phone: ['', [Validators.required, Validators.pattern(PHONE_PATTERN)]],
     password: ['', [Validators.required]]
   });
 
@@ -30,9 +31,9 @@ export class LoginComponent {
     this.loading.set(true);
     this.error.set(null);
     this.auth.login(this.form.getRawValue()).subscribe({
-      next: (response) => {
+      next: () => {
         this.loading.set(false);
-        void this.router.navigate([response.user.role === 'OWNER' ? '/my-listings' : '/search']);
+        void this.router.navigate(['/my-listings']);
       },
       error: (err) => {
         this.loading.set(false);
