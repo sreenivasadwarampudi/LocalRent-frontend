@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiBaseUrl: '/api',
+  apiBaseUrl: 'https://localrent-backend.onrender.com/api',
   defaultRadiusKm: 20
 };
