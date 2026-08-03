@@ -6,7 +6,7 @@
   <div class="card">
     <h1>{{ item.title }}</h1>
     <p class="hint">
-      {{ item.category }} &middot; {{ item.areaName }}@if (item.city) {, {{ item.city }}}
+      {{ categoryLabel(item.category) }} &middot; {{ item.areaName }}@if (item.city) {, {{ item.city }}}
     </p>
     <p style="font-size: 20px; font-weight: 700;">{{ item.pricePerDay | number: '1.0-2' }} / day</p>
     @if (item.description) {
@@ -15,7 +15,15 @@
     @if (item.addressLine) {
       <p class="hint">{{ item.addressLine }}</p>
     }
-    <p class="hint">Owner: {{ item.ownerName }}@if (item.contactPhone) { &middot; {{ item.contactPhone }}}</p>
+    <p class="hint">Owner: {{ item.ownerName }}</p>
+    @if (item.contactPhone) {
+      <div class="row">
+        <a class="btn" [href]="'tel:' + item.contactPhone">Call {{ item.contactPhone }}</a>
+        <a class="btn secondary" [href]="whatsappUrl(item.contactPhone)" target="_blank" rel="noopener">
+          WhatsApp
+        </a>
+      </div>
+    }
     <p><a [href]="mapUrl(item)" target="_blank" rel="noopener">View on map</a></p>
     <a class="btn secondary" routerLink="/search">Back to search</a>
   </div>

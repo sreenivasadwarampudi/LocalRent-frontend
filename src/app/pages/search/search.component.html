@@ -1,12 +1,33 @@
 <h1>Find rentals near you</h1>
+<p class="hint">Bikes, cars, trucks, tractors, JCBs, tools, tents, furniture and properties — no login needed to browse.</p>
+
+<div class="chips">
+  <button type="button" class="chip" [class.active]="category === ''" (click)="selectCategory('')">
+    All
+  </button>
+  @for (option of popularCategories; track option.value) {
+    <button
+      type="button"
+      class="chip"
+      [class.active]="category === option.value"
+      (click)="selectCategory(option.value)">
+      {{ option.icon }} {{ option.label }}
+    </button>
+  }
+</div>
 
 <div class="card">
   <div class="row">
     <div style="flex: 1 1 200px;">
       <label for="category">Category</label>
       <select id="category" [(ngModel)]="category">
-        @for (option of categories; track option.value) {
-          <option [value]="option.value">{{ option.label }}</option>
+        <option value="">All categories</option>
+        @for (group of categoryGroups; track group.label) {
+          <optgroup [label]="group.label">
+            @for (option of group.options; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </optgroup>
         }
       </select>
     </div>
@@ -48,7 +69,7 @@
     <a class="card" style="text-decoration: none; color: inherit;" [routerLink]="['/listings', listing.id]">
       <h3 style="margin: 0 0 6px;">{{ listing.title }}</h3>
       <p class="hint" style="margin: 0 0 8px;">
-        {{ listing.category }} &middot; {{ listing.areaName }}@if (listing.city) {, {{ listing.city }}}
+        {{ categoryLabel(listing.category) }} &middot; {{ listing.areaName }}@if (listing.city) {, {{ listing.city }}}
       </p>
       <p style="margin: 0 0 6px; font-weight: 600;">
         {{ listing.pricePerDay | number: '1.0-2' }} / day

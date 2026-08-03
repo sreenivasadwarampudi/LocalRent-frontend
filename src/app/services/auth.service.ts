@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { AuthResponse, Role, User } from '../models';
+import { AuthResponse, User } from '../models';
 
 const TOKEN_KEY = 'localrent.token';
 const USER_KEY = 'localrent.user';
@@ -17,19 +17,13 @@ export class AuthService {
 
   constructor(private readonly http: HttpClient) {}
 
-  signup(payload: {
-    name: string;
-    email: string;
-    password: string;
-    phone?: string;
-    role: Role;
-  }): Observable<AuthResponse> {
+  signup(payload: { name: string; phone: string; password: string }): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${environment.apiBaseUrl}/auth/signup`, payload)
       .pipe(tap((response) => this.persist(response)));
   }
 
-  login(payload: { email: string; password: string }): Observable<AuthResponse> {
+  login(payload: { phone: string; password: string }): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${environment.apiBaseUrl}/auth/login`, payload)
       .pipe(tap((response) => this.persist(response)));

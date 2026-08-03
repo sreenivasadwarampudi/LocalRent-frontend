@@ -2,6 +2,7 @@ import { DecimalPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { CATEGORY_GROUPS, CATEGORY_OPTIONS, categoryLabel } from '../../categories';
 import { Listing, RentalCategory } from '../../models';
 import { GeolocationService } from '../../services/geolocation.service';
 import { ListingService } from '../../services/listing.service';
@@ -16,12 +17,9 @@ export class SearchComponent {
   private readonly listings = inject(ListingService);
   private readonly geo = inject(GeolocationService);
 
-  readonly categories: Array<{ value: RentalCategory | ''; label: string }> = [
-    { value: '', label: 'All categories' },
-    { value: 'BIKE', label: 'Bikes' },
-    { value: 'CAR', label: 'Cars' },
-    { value: 'PROPERTY', label: 'Properties' }
-  ];
+  readonly categoryGroups = CATEGORY_GROUPS;
+  readonly popularCategories = CATEGORY_OPTIONS;
+  readonly categoryLabel = categoryLabel;
 
   category: RentalCategory | '' = '';
   area = '';
@@ -36,6 +34,10 @@ export class SearchComponent {
   readonly error = signal<string | null>(null);
   readonly locationLabel = signal<string | null>(null);
 
+  constructor() {
+    void this.search();
+  }
+
   async useMyLocation(): Promise<void> {
     this.error.set(null);
     try {
@@ -49,6 +51,11 @@ export class SearchComponent {
     } catch (err) {
       this.error.set((err as Error).message);
     }
+  }
+
+  selectCategory(category: RentalCategory | ''): void {
+    this.category = category;
+    void this.search();
   }
 
   clearLocation(): void {

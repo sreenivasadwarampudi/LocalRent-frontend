@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Role } from '../../models';
 import { AuthService } from '../../services/auth.service';
+import { PHONE_PATTERN } from '../../validators';
 
 @Component({
   selector: 'app-signup',
@@ -20,10 +20,8 @@ export class SignupComponent {
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    phone: [''],
-    role: ['SEEKER' as Role, [Validators.required]]
+    phone: ['', [Validators.required, Validators.pattern(PHONE_PATTERN)]],
+    password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
   submit(): void {
@@ -34,9 +32,9 @@ export class SignupComponent {
     this.loading.set(true);
     this.error.set(null);
     this.auth.signup(this.form.getRawValue()).subscribe({
-      next: (response) => {
+      next: () => {
         this.loading.set(false);
-        void this.router.navigate([response.user.role === 'OWNER' ? '/my-listings' : '/search']);
+        void this.router.navigate(['/listings/new']);
       },
       error: (err) => {
         this.loading.set(false);

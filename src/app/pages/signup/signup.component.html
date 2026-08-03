@@ -1,24 +1,17 @@
 <div class="card" style="max-width: 460px; margin: 0 auto;">
-  <h1>Create your account</h1>
+  <h1>List your rental</h1>
+  <p class="hint">
+    An account is only needed to post rentals. Browsing and searching stay free and open to everyone.
+  </p>
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <div class="field">
-      <label for="role">I want to</label>
-      <select id="role" formControlName="role">
-        <option value="SEEKER">Find rentals</option>
-        <option value="OWNER">List my bike / car / property</option>
-      </select>
-    </div>
     <div class="field">
       <label for="name">Full name</label>
       <input id="name" formControlName="name" />
     </div>
     <div class="field">
-      <label for="email">Email</label>
-      <input id="email" type="email" formControlName="email" />
-    </div>
-    <div class="field">
-      <label for="phone">Phone</label>
-      <input id="phone" formControlName="phone" />
+      <label for="phone">Mobile number</label>
+      <input id="phone" type="tel" inputmode="tel" formControlName="phone" placeholder="9876543210" />
+      <span class="hint">You will use this number to log in. Renters call you on it.</span>
     </div>
     <div class="field">
       <label for="password">Password</label>
@@ -29,7 +22,7 @@
       <p class="error">{{ error() }}</p>
     }
     <button class="btn" type="submit" [disabled]="loading()">
-      {{ loading() ? 'Creating...' : 'Sign up' }}
+      {{ loading() ? 'Creating...' : 'Create owner account' }}
     </button>
   </form>
   <p class="hint">Already registered? <a routerLink="/login">Log in</a></p>

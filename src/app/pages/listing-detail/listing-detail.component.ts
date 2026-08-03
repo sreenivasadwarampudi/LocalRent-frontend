@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { categoryLabel } from '../../categories';
 import { Listing } from '../../models';
 import { ListingService } from '../../services/listing.service';
 
@@ -16,6 +17,7 @@ export class ListingDetailComponent {
 
   readonly listing = signal<Listing | null>(null);
   readonly error = signal<string | null>(null);
+  readonly categoryLabel = categoryLabel;
 
   constructor() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -25,6 +27,10 @@ export class ListingDetailComponent {
         error: (err) => this.error.set(err?.error?.message ?? 'Listing not found')
       });
     }
+  }
+
+  whatsappUrl(phone: string): string {
+    return `https://wa.me/${phone.replace(/[^0-9]/g, '')}`;
   }
 
   mapUrl(listing: Listing): string {

@@ -15,7 +15,7 @@
   @for (item of items(); track item.id) {
     <div class="card">
       <h3 style="margin: 0 0 6px;">{{ item.title }}</h3>
-      <p class="hint" style="margin: 0 0 6px;">{{ item.category }} &middot; {{ item.areaName }}</p>
+      <p class="hint" style="margin: 0 0 6px;">{{ categoryLabel(item.category) }} &middot; {{ item.areaName }}</p>
       <p style="margin: 0 0 10px;">{{ item.pricePerDay | number: '1.0-2' }} / day</p>
       <p class="hint">{{ item.available ? 'Available' : 'Unavailable' }}</p>
       <div class="row">

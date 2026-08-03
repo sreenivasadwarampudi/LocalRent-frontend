@@ -9,11 +9,11 @@
   </nav>
   <div class="account">
     @if (auth.isLoggedIn()) {
-      <span class="who">{{ auth.user()?.name }} ({{ auth.user()?.role }})</span>
+      <span class="who">{{ auth.user()?.name }}</span>
       <button type="button" class="link" (click)="logout()">Logout</button>
     } @else {
-      <a routerLink="/login">Login</a>
-      <a class="cta" routerLink="/signup">Sign up</a>
+      <a routerLink="/login">Owner login</a>
+      <a class="cta" routerLink="/signup">List your rental</a>
     }
   </div>
 </header>

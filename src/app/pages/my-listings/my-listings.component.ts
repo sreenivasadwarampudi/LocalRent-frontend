@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { categoryLabel } from '../../categories';
 import { Listing } from '../../models';
 import { ListingService } from '../../services/listing.service';
 
@@ -13,6 +14,7 @@ import { ListingService } from '../../services/listing.service';
 export class MyListingsComponent {
   private readonly listings = inject(ListingService);
 
+  readonly categoryLabel = categoryLabel;
   readonly items = signal<Listing[]>([]);
   readonly error = signal<string | null>(null);
 
