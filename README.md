@@ -5,7 +5,8 @@ equipment and properties.
 
 ## Requirements
 
-- Node.js 18.19+ / 20+
+- Node.js 18.19+, 20.11+ or 22 (see `.nvmrc`). Node 23/24 are **not** supported by Angular 18 and
+  will fail with "The current version of Node is not supported by Angular".
 - The [LocalRent backend](https://github.com/sreenivasadwarampudi/LocalRent-backend) running on http://localhost:8080
 
 ## Run
@@ -14,6 +15,9 @@ equipment and properties.
 npm install
 npm start
 ```
+
+Run `npm start` (or `npx ng serve`) rather than a globally installed `ng`: the project pins Angular CLI
+18 locally, and an older global CLI (e.g. 17) reports its own version and can fail to build this project.
 
 App runs on http://localhost:4200. The API base URL lives in `src/environments/environment.ts`.
 
