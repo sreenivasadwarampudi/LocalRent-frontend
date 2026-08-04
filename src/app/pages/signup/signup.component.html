@@ -8,22 +8,55 @@
       <label for="name">Full name</label>
       <input id="name" formControlName="name" />
     </div>
+
     <div class="field">
       <label for="phone">Mobile number</label>
       <input id="phone" type="tel" inputmode="tel" formControlName="phone" placeholder="9876543210" />
       <span class="hint">You will use this number to log in. Renters call you on it.</span>
     </div>
+
     <div class="field">
       <label for="password">Password</label>
       <input id="password" type="password" formControlName="password" />
       <span class="hint">At least 6 characters</span>
     </div>
+
+    <!-- Terms and Conditions Section -->
+    <div class="field terms-box" style="margin: 1.5rem 0; border: 1px solid #e0e0e0; padding: 12px; border-radius: 6px; background: #fafafa;">
+      <label style="font-weight: bold; margin-bottom: 6px; display: block;">Terms & Conditions</label>
+      <div class="terms-text" style="font-size: 0.85rem; color: #555; max-height: 120px; overflow-y: auto; margin-bottom: 10px; line-height: 1.4;">
+        <p style="margin: 0 0 6px 0;">
+          <strong>Platform Disclaimer:</strong> Local Rent is a software platform connecting owners with customers.
+        </p>
+        <ul style="margin: 0; padding-left: 18px;">
+          <li>Always verify tenant identity and legal proofs (e.g., Driving License, Government ID) before handing over any item or property.</li>
+          <li>Ensure all details are verified and satisfactory before finalizing any agreement.</li>
+          <li><strong>Age Restriction:</strong> Strictly do not rent any vehicles to individuals under 18 years of age.</li>
+        </ul>
+      </div>
+
+      <div class="checkbox-field" style="display: flex; align-items: flex-start; gap: 8px;">
+        <input type="checkbox" id="terms" formControlName="acceptTerms" style="margin-top: 3px;" />
+        <label for="terms" style="font-size: 0.85rem; cursor: pointer;">
+          I have read and agree to the Terms & Conditions
+        </label>
+      </div>
+      
+      @if (form.get('acceptTerms')?.touched && form.get('acceptTerms')?.invalid) {
+        <span class="error" style="font-size: 0.8rem; color: #d32f2f; margin-top: 4px; display: block;">
+          You must accept the terms and conditions to proceed.
+        </span>
+      }
+    </div>
+
     @if (error()) {
       <p class="error">{{ error() }}</p>
     }
-    <button class="btn" type="submit" [disabled]="loading()">
+
+    <button class="btn" type="submit" [disabled]="loading() || form.invalid">
       {{ loading() ? 'Creating...' : 'Create owner account' }}
     </button>
   </form>
+  
   <p class="hint">Already registered? <a routerLink="/login">Log in</a></p>
 </div>

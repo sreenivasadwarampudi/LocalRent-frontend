@@ -21,7 +21,8 @@ export class SignupComponent {
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required]],
     phone: ['', [Validators.required, Validators.pattern(PHONE_PATTERN)]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    acceptTerms: [false, [Validators.requiredTrue]]
   });
 
   submit(): void {
