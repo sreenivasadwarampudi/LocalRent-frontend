@@ -1,5 +1,4 @@
 <header class="topbar">
-  <!-- Replaced text link with logo image + text -->
   <a class="brand" routerLink="/search">
     <img src="logo.png" alt="LocalRent Logo" class="brand-logo" />
     <span class="brand-text">LocalRent</span>
@@ -7,6 +6,7 @@
 
   <nav>
     <a routerLink="/search" routerLinkActive="active">Find rentals</a>
+    <a routerLink="/about" routerLinkActive="active">About LocalRent</a> <!-- Added tab -->
     @if (auth.isOwner()) {
       <a routerLink="/my-listings" routerLinkActive="active">My listings</a>
       <a routerLink="/listings/new" routerLinkActive="active">Post rental</a>
