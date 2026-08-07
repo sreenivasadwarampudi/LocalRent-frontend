@@ -1,5 +1,10 @@
 <header class="topbar">
-  <a class="brand" routerLink="/search">LocalRent</a>
+  <!-- Replaced text link with logo image + text -->
+  <a class="brand" routerLink="/search">
+    <img src="logo.png" alt="LocalRent Logo" class="brand-logo" />
+    <span class="brand-text">LocalRent</span>
+  </a>
+
   <nav>
     <a routerLink="/search" routerLinkActive="active">Find rentals</a>
     @if (auth.isOwner()) {
@@ -7,6 +12,7 @@
       <a routerLink="/listings/new" routerLinkActive="active">Post rental</a>
     }
   </nav>
+
   <div class="account">
     @if (auth.isLoggedIn()) {
       <span class="who">{{ auth.user()?.name }}</span>

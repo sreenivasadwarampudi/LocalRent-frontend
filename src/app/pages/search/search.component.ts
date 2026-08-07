@@ -11,7 +11,8 @@ import { ListingService } from '../../services/listing.service';
   selector: 'app-search',
   standalone: true,
   imports: [FormsModule, RouterLink, DecimalPipe],
-  templateUrl: './search.component.html'
+  templateUrl: './search.component.html',
+  styleUrl: './search.component.css'
 })
 export class SearchComponent {
   private readonly listings = inject(ListingService);

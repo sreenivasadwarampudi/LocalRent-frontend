@@ -7,8 +7,30 @@ body {
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background: #f4f6f5;
   color: #17211e;
+  
+  /* Added for full-screen watermark positioning */
+  position: relative;
+  min-height: 100vh;
 }
 
+/* Background Logo Watermark */
+body::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60vw;
+  max-width: 650px;
+  height: 60vh;
+  background-image: url('/logo_only.png'); /* Use cropped icon-only image */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.05; /* Reduced from 0.12 so filter buttons stand out cleanly */
+  pointer-events: none;
+  z-index: 0;
+}
 h1 {
   font-size: 26px;
   margin-top: 0;
@@ -19,6 +41,8 @@ h1 {
   border: 1px solid #e2e8e5;
   border-radius: 10px;
   padding: 20px;
+  position: relative; /* Keeps cards above the watermark */
+  z-index: 1;
 }
 
 .grid {

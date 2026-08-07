@@ -8,10 +8,18 @@
 }
 
 .brand {
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   text-decoration: none;
+  color: #fff;
+  padding: 4px 0;
+}
+
+.brand-logo {
+  height: 36px; /* Keeps header compact */
+  width: auto;
+  object-fit: contain;
 }
 
 nav {
