@@ -7,6 +7,14 @@ import { AuthResponse, User } from '../models';
 const TOKEN_KEY = 'localrent.token';
 const USER_KEY = 'localrent.user';
 
+export interface UserResponse {
+  id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  role: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly currentUser = signal<User | null>(this.readStoredUser());
@@ -49,6 +57,15 @@ export class AuthService {
     localStorage.setItem(TOKEN_KEY, response.token);
     localStorage.setItem(USER_KEY, JSON.stringify(response.user));
     this.currentUser.set(response.user);
+  }
+
+  updatePhone(phone: string): Observable<void> {
+  return this.http.put<void>(`${environment.apiBaseUrl}/users/phone`, { phone });
+  }
+
+  // Updated to match your AuthController endpoint: /api/auth/me
+  getCurrentUser(): Observable<UserResponse> {
+    return this.http.get<UserResponse>(`${environment.apiBaseUrl}/auth/me`);
   }
 
   private readStoredUser(): User | null {
