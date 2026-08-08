@@ -3,6 +3,8 @@
   <p class="hint">
     An account is only needed to post rentals. Browsing and searching stay free and open to everyone.
   </p>
+
+  <!-- Mobile Sign-Up Form -->
   <form [formGroup]="form" (ngSubmit)="submit()">
     <div class="field">
       <label for="name">Full name</label>
@@ -21,24 +23,20 @@
       <span class="hint">At least 6 characters</span>
     </div>
 
-    <!-- Terms and Conditions Section -->
-    <div class="field terms-box" style="margin: 1.5rem 0; border: 1px solid #e0e0e0; padding: 12px; border-radius: 6px; background: #fafafa;">
-      <label style="font-weight: bold; margin-bottom: 6px; display: block;">Terms & Conditions</label>
-      <div class="terms-text" style="font-size: 0.85rem; color: #555; max-height: 120px; overflow-y: auto; margin-bottom: 10px; line-height: 1.4;">
-        <p style="margin: 0 0 6px 0;">
-          <strong>Platform Disclaimer:</strong> Local Rent is a software platform connecting owners with customers.
-        </p>
-        <ul style="margin: 0; padding-left: 18px;">
-          <li>Always verify tenant identity and legal proofs (e.g., Driving License, Government ID) before handing over any item or property.</li>
-          <li>Ensure all details are verified and satisfactory before finalizing any agreement.</li>
-          <li><strong>Age Restriction:</strong> Strictly do not rent any vehicles to individuals under 18 years of age.</li>
-        </ul>
-      </div>
-
-      <div class="checkbox-field" style="display: flex; align-items: flex-start; gap: 8px;">
-        <input type="checkbox" id="terms" formControlName="acceptTerms" style="margin-top: 3px;" />
+    <!-- Simplified Terms Checkbox Section -->
+    <div class="field" style="margin: 1.25rem 0;">
+      <div class="checkbox-field" style="display: flex; align-items: center; gap: 8px;">
+        <input 
+          type="checkbox" 
+          id="terms" 
+          formControlName="acceptTerms" 
+          (click)="onCheckboxClick($event)" 
+          style="cursor: pointer;" />
         <label for="terms" style="font-size: 0.85rem; cursor: pointer;">
-          I have read and agree to the Terms & Conditions
+          I have read and agree to the 
+          <a type="button" (click)="openTermsModal(); $event.preventDefault();" style="color: #0066cc; text-decoration: underline; cursor: pointer;">
+            Terms & Conditions
+          </a>
         </label>
       </div>
       
@@ -58,5 +56,55 @@
     </button>
   </form>
   
-  <p class="hint">Already registered? <a routerLink="/login">Log in</a></p>
+  <p class="hint" style="margin-top: 1rem;">Already registered? <a routerLink="/login">Log in</a></p>
 </div>
+
+<!-- Modal Overlay -->
+@if (showTermsModal()) {
+  <div class="modal-backdrop" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+    <div class="modal-card" style="background: #fff; width: 90%; max-width: 480px; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+      <h3 style="margin-top: 0; margin-bottom: 12px;">Terms & Conditions</h3>
+      
+      <!-- Scrollable Container -->
+      <div 
+        #termsContainer 
+        (scroll)="onTermsScroll($event)" 
+        style="font-size: 0.85rem; color: #444; max-height: 200px; overflow-y: auto; border: 1px solid #e0e0e0; padding: 12px; border-radius: 6px; background: #fafafa; line-height: 1.4;">
+        <p style="margin: 0 0 8px 0;">
+          <strong>Platform Disclaimer:</strong> Local Rent is a software platform connecting owners with customers.
+        </p>
+        <ul style="margin: 0; padding-left: 18px;">
+          <li style="margin-bottom: 6px;">Always verify tenant identity and legal proofs (e.g., Driving License, Government ID) before handing over any item or property.</li>
+          <li style="margin-bottom: 6px;">Ensure all details are verified and satisfactory before finalizing any agreement.</li>
+          <li style="margin-bottom: 6px;"><strong>Age Restriction:</strong> Strictly do not rent any vehicles to individuals under 18 years of age.</li>
+          <li style="margin-bottom: 6px;">Owners are solely responsible for ensuring equipment safety and operational readiness prior to rental dispatch.</li>
+          <li>Local Rent does not guarantee rental return or assume liability for property damage or loss incurred during lease periods.</li>
+        </ul>
+      </div>
+
+      @if (!hasScrolledToBottom()) {
+        <p style="font-size: 0.75rem; color: #d32f2f; margin: 8px 0 0 0;">
+          Please scroll to the bottom of the terms to accept.
+        </p>
+      }
+
+      <!-- Modal Footer Action -->
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+        <button 
+          type="button" 
+          (click)="closeTermsModal()" 
+          style="padding: 8px 16px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer;">
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          [disabled]="!hasScrolledToBottom()" 
+          (click)="acceptAndClose()" 
+          style="padding: 8px 16px; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;"
+          [style.opacity]="hasScrolledToBottom() ? '1' : '0.5'">
+          I Agree
+        </button>
+      </div>
+    </div>
+  </div>
+}
