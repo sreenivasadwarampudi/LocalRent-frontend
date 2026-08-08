@@ -3,8 +3,10 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CATEGORY_GROUPS } from '../../categories';
 import { RentalCategory } from '../../models';
+import { AuthService, UserResponse } from '../../services/auth.service';
 import { GeolocationService } from '../../services/geolocation.service';
 import { ListingService } from '../../services/listing.service';
+import { PHONE_PATTERN } from '../../validators';
 
 @Component({
   selector: 'app-listing-form',
@@ -16,6 +18,7 @@ export class ListingFormComponent {
   private readonly fb = inject(FormBuilder);
   private readonly listings = inject(ListingService);
   private readonly geo = inject(GeolocationService);
+  private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -23,6 +26,11 @@ export class ListingFormComponent {
   readonly error = signal<string | null>(null);
   readonly saving = signal(false);
   readonly locating = signal(false);
+
+  // Phone Modal Signals
+  readonly showPhoneModal = signal(false);
+  readonly phoneLoading = signal(false);
+  readonly phoneError = signal<string | null>(null);
 
   readonly categoryGroups = CATEGORY_GROUPS;
 
@@ -38,6 +46,10 @@ export class ListingFormComponent {
     longitude: [null as number | null, [Validators.required]],
     contactPhone: [''],
     available: [true]
+  });
+
+  readonly phoneForm = this.fb.nonNullable.group({
+    phone: ['', [Validators.required, Validators.pattern(PHONE_PATTERN)]]
   });
 
   constructor() {
@@ -86,6 +98,25 @@ export class ListingFormComponent {
       this.error.set('Fill all required fields, including the location.');
       return;
     }
+
+    // Check if user has a valid mobile number in profile before saving listing
+    this.auth.getCurrentUser().subscribe({
+      next: (user: UserResponse) => {
+        if (!user?.phone) {
+          this.phoneError.set(null);
+          this.showPhoneModal.set(true);
+        } else {
+          this.executeSave();
+        }
+      },
+      error: () => {
+        // Attempt saving if profile check fails; backend validation will catch missing phone if necessary
+        this.executeSave();
+      }
+    });
+  }
+
+  private executeSave(): void {
     const value = this.form.getRawValue();
     const payload = {
       ...value,
@@ -97,6 +128,7 @@ export class ListingFormComponent {
     const request$ = this.listingId
       ? this.listings.update(this.listingId, payload)
       : this.listings.create(payload);
+
     request$.subscribe({
       next: () => {
         this.saving.set(false);
@@ -104,8 +136,43 @@ export class ListingFormComponent {
       },
       error: (err) => {
         this.saving.set(false);
-        this.error.set(err?.error?.message ?? 'Could not save the listing');
+        const errorMsg = err?.error?.message ?? '';
+        if (errorMsg.includes('PHONE_REQUIRED')) {
+          this.phoneError.set(null);
+          this.showPhoneModal.set(true);
+        } else {
+          this.error.set(errorMsg || 'Could not save the listing');
+        }
       }
     });
+  }
+
+  savePhoneAndProceed(): void {
+    if (this.phoneForm.invalid) {
+      this.phoneForm.markAllAsTouched();
+      return;
+    }
+
+    this.phoneLoading.set(true);
+    this.phoneError.set(null);
+
+    const newPhone = this.phoneForm.controls.phone.value;
+
+    this.auth.updatePhone(newPhone).subscribe({
+      next: () => {
+        this.phoneLoading.set(false);
+        this.showPhoneModal.set(false);
+        // Automatically save listing after successfully storing phone number
+        this.executeSave();
+      },
+      error: (err) => {
+        this.phoneLoading.set(false);
+        this.phoneError.set(err?.error?.message ?? 'Failed to save mobile number');
+      }
+    });
+  }
+
+  closePhoneModal(): void {
+    this.showPhoneModal.set(false);
   }
 }
