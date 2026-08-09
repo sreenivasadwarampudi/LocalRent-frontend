@@ -60,7 +60,7 @@ export class AuthService {
   }
 
   updatePhone(phone: string): Observable<void> {
-  return this.http.put<void>(`${environment.apiBaseUrl}/users/phone`, { phone });
+  return this.http.put<void>(`${environment.apiBaseUrl}/auth/phone`, { phone });
   }
 
   // Updated to match your AuthController endpoint: /api/auth/me
