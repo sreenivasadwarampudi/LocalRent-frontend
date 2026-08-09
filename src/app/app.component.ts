@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
@@ -13,7 +13,19 @@ export class AppComponent {
   readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
+  // Mobile menu toggle state
+  isMenuOpen = signal(false);
+
+  toggleMenu(): void {
+    this.isMenuOpen.update(prev => !prev);
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen.set(false);
+  }
+
   logout(): void {
+    this.closeMenu();
     this.auth.logout();
     void this.router.navigate(['/search']);
   }

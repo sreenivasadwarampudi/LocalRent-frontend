@@ -1,0 +1,157 @@
+.form-card {
+  max-width: 680px;
+  margin: 20px auto;
+  padding: 32px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.field label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #17211e;
+  margin-bottom: 6px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Location buttons container */
+.location-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* Checkbox alignments */
+.checkbox-field {
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  color: #17211e;
+}
+
+/* Fix for checkboxes being stretched by .field input width: 100% */
+.checkbox-field input[type="checkbox"],
+.checkbox-label input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  padding: 0 !important;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #10312b;
+  flex-shrink: 0;
+}
+
+/* Terms link & error styling */
+.terms-link {
+  color: #0066cc;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.terms-error {
+  font-size: 0.8rem;
+  color: #d32f2f;
+  margin-top: 6px;
+  display: block;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #10312b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  background-color: #16423a;
+}
+
+/* Modal styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-card {
+  background: #fff;
+  width: 90%;
+  max-width: 400px;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .location-actions {
+    flex-direction: column;
+  }
+
+  .location-actions button {
+    width: 100%;
+  }
+}

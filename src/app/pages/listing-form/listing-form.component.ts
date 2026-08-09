@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CATEGORY_GROUPS } from '../../categories';
@@ -12,7 +12,8 @@ import { PHONE_PATTERN } from '../../validators';
   selector: 'app-listing-form',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './listing-form.component.html'
+  templateUrl: './listing-form.component.html',
+  styleUrl: './listing-form.component.css'
 })
 export class ListingFormComponent {
   private readonly fb = inject(FormBuilder);
@@ -21,6 +22,8 @@ export class ListingFormComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+
+  @ViewChild('termsContainer') termsContainer!: ElementRef<HTMLDivElement>;
 
   readonly listingId = this.route.snapshot.paramMap.get('id');
   readonly error = signal<string | null>(null);
@@ -31,6 +34,10 @@ export class ListingFormComponent {
   readonly showPhoneModal = signal(false);
   readonly phoneLoading = signal(false);
   readonly phoneError = signal<string | null>(null);
+
+  // Terms & Conditions Modal Signals
+  readonly showTermsModal = signal(false);
+  readonly hasScrolledToBottom = signal(false);
 
   readonly categoryGroups = CATEGORY_GROUPS;
 
@@ -45,7 +52,8 @@ export class ListingFormComponent {
     latitude: [null as number | null, [Validators.required]],
     longitude: [null as number | null, [Validators.required]],
     contactPhone: [''],
-    available: [true]
+    available: [true],
+    acceptTerms: [false, [Validators.requiredTrue]]
   });
 
   readonly phoneForm = this.fb.nonNullable.group({
@@ -59,6 +67,46 @@ export class ListingFormComponent {
         error: (err) => this.error.set(err?.error?.message ?? 'Could not load listing')
       });
     }
+  }
+
+  // Intercept direct checkbox click if terms aren't accepted yet
+  onCheckboxClick(event: MouseEvent): void {
+    if (!this.form.controls.acceptTerms.value) {
+      event.preventDefault();
+      this.openTermsModal();
+    }
+  }
+
+  openTermsModal(): void {
+    this.showTermsModal.set(true);
+    this.hasScrolledToBottom.set(false);
+
+    setTimeout(() => {
+      if (this.termsContainer?.nativeElement) {
+        const el = this.termsContainer.nativeElement;
+        if (el.scrollHeight <= el.clientHeight) {
+          this.hasScrolledToBottom.set(true);
+        }
+      }
+    }, 100);
+  }
+
+  onTermsScroll(event: Event): void {
+    const el = event.target as HTMLElement;
+    const isBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 5;
+    if (isBottom) {
+      this.hasScrolledToBottom.set(true);
+    }
+  }
+
+  acceptAndClose(): void {
+    this.form.controls.acceptTerms.setValue(true);
+    this.form.controls.acceptTerms.markAsTouched();
+    this.showTermsModal.set(false);
+  }
+
+  closeTermsModal(): void {
+    this.showTermsModal.set(false);
   }
 
   async captureLocation(): Promise<void> {
@@ -95,11 +143,10 @@ export class ListingFormComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.error.set('Fill all required fields, including the location.');
+      this.error.set('Fill all required fields, accept terms, and provide location.');
       return;
     }
 
-    // Check if user has a valid mobile number in profile before saving listing
     this.auth.getCurrentUser().subscribe({
       next: (user: UserResponse) => {
         if (!user?.phone) {
@@ -110,7 +157,6 @@ export class ListingFormComponent {
         }
       },
       error: () => {
-        // Attempt saving if profile check fails; backend validation will catch missing phone if necessary
         this.executeSave();
       }
     });
@@ -162,7 +208,6 @@ export class ListingFormComponent {
       next: () => {
         this.phoneLoading.set(false);
         this.showPhoneModal.set(false);
-        // Automatically save listing after successfully storing phone number
         this.executeSave();
       },
       error: (err) => {
