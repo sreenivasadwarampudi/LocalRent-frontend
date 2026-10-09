@@ -40,10 +40,13 @@ export class ListingFormComponent {
   readonly hasScrolledToBottom = signal(false);
 
   readonly categoryGroups = CATEGORY_GROUPS;
+  readonly activeGroup = signal<string>(CATEGORY_GROUPS[0]?.label ?? '');
+  readonly priceChips = [300, 500, 1000, 2000];
+  readonly descriptionMax = 500;
 
   readonly form = this.fb.nonNullable.group({
     title: ['', [Validators.required]],
-    description: [''],
+    description: ['', [Validators.maxLength(500)]],
     category: ['BIKE' as RentalCategory, [Validators.required]],
     pricePerDay: [0, [Validators.required, Validators.min(0)]],
     areaName: ['', [Validators.required]],
@@ -61,14 +64,92 @@ export class ListingFormComponent {
   });
 
   constructor() {
+    this.syncActiveGroup();
     if (this.listingId) {
       this.listings.get(this.listingId).subscribe({
-        next: (listing) => this.form.patchValue(listing),
+        next: (listing) => {
+          this.form.patchValue(listing);
+          this.syncActiveGroup();
+        },
         error: (err) => this.error.set(err?.error?.message ?? 'Could not load listing')
       });
     }
   }
 
+  // ---------- Category picker ----------
+  get visibleOptions() {
+    return this.categoryGroups.find((g) => g.label === this.activeGroup())?.options ?? [];
+  }
+
+  selectGroup(label: string): void {
+    this.activeGroup.set(label);
+  }
+
+  selectCategory(value: string): void {
+    this.form.controls.category.setValue(value as RentalCategory);
+  }
+
+  private syncActiveGroup(): void {
+    const current = this.form.controls.category.value;
+    const group = this.categoryGroups.find((g) => g.options.some((o) => o.value === current));
+    if (group) {
+      this.activeGroup.set(group.label);
+    }
+  }
+
+  iconFor(value: string): string {
+    const v = (value ?? '').toLowerCase();
+    if (v.includes('bike') || v.includes('scooter') || v.includes('moped')) return '🏍️';
+    if (v.includes('tractor') || v.includes('harvest') || v.includes('farm')) return '🚜';
+    if (v.includes('car') || v.includes('jeep') || v.includes('suv')) return '🚗';
+    if (v.includes('auto') || v.includes('truck') || v.includes('van') || v.includes('bus')) return '🚚';
+    if (v.includes('flat') || v.includes('house') || v.includes('room') || v.includes('apartment') || v.includes('pg')) return '🏠';
+    if (v.includes('shop') || v.includes('office') || v.includes('hall')) return '🏢';
+    if (v.includes('tool') || v.includes('drill') || v.includes('equipment')) return '🔧';
+    if (v.includes('camera') || v.includes('photo')) return '📷';
+    if (v.includes('cycle') || v.includes('bicycle')) return '🚲';
+    return '📦';
+  }
+
+  get selectedCategoryLabel(): string {
+    const current = this.form.controls.category.value;
+    for (const g of this.categoryGroups) {
+      const found = g.options.find((o) => o.value === current);
+      if (found) return found.label;
+    }
+    return 'Category';
+  }
+
+  // ---------- Price chips ----------
+  setPrice(amount: number): void {
+    this.form.controls.pricePerDay.setValue(amount);
+    this.form.controls.pricePerDay.markAsDirty();
+  }
+
+  // ---------- Progress & preview ----------
+  get progress(): number {
+    const v = this.form.getRawValue();
+    const checks = [
+      !!v.title?.trim(),
+      Number(v.pricePerDay) > 0,
+      !!v.areaName?.trim(),
+      v.latitude !== null && v.longitude !== null,
+      !!v.description?.trim(),
+      v.acceptTerms
+    ];
+    return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+  }
+
+  get hasLocation(): boolean {
+    const v = this.form.getRawValue();
+    return v.latitude !== null && v.longitude !== null;
+  }
+
+  get descriptionLength(): number {
+    return this.form.controls.description.value?.length ?? 0;
+  }
+
+  // ---------- Terms modal ----------
   // Intercept direct checkbox click if terms aren't accepted yet
   onCheckboxClick(event: MouseEvent): void {
     if (!this.form.controls.acceptTerms.value) {
@@ -109,6 +190,7 @@ export class ListingFormComponent {
     this.showTermsModal.set(false);
   }
 
+  // ---------- Location ----------
   async captureLocation(): Promise<void> {
     this.error.set(null);
     this.locating.set(true);
@@ -123,27 +205,49 @@ export class ListingFormComponent {
   }
 
   async locateArea(): Promise<void> {
-    const area = [this.form.getRawValue().areaName, this.form.getRawValue().city]
-      .filter(Boolean)
-      .join(', ');
+    this.error.set(null);
+    const ok = await this.geocodeTypedArea();
+    if (!ok) {
+      this.error.set('Could not find that area. Check the area and city, or use your current location.');
+    }
+  }
+
+  /** Looks up coordinates from the typed area/city. Returns true when location was set. */
+  private async geocodeTypedArea(): Promise<boolean> {
+    const raw = this.form.getRawValue();
+    const area = [raw.areaName, raw.city].filter(Boolean).join(', ');
     if (!area) {
       this.error.set('Enter an area name first');
-      return;
+      return false;
     }
     this.locating.set(true);
     const coords = await this.geo.geocode(area).catch(() => null);
     this.locating.set(false);
     if (!coords) {
-      this.error.set('Could not find that area. Enter latitude and longitude manually.');
-      return;
+      return false;
     }
     this.form.patchValue({ latitude: coords.latitude, longitude: coords.longitude });
+    return true;
   }
 
-  submit(): void {
+  clearLocation(): void {
+    this.form.patchValue({ latitude: null, longitude: null });
+  }
+
+  // ---------- Submit ----------
+  async submit(): Promise<void> {
+    // Auto-detect location from the typed area so users never see lat/long
+    if (!this.hasLocation && this.form.controls.areaName.value.trim()) {
+      await this.geocodeTypedArea();
+    }
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.error.set('Fill all required fields, accept terms, and provide location.');
+      this.error.set(
+        this.hasLocation
+          ? 'Please fill all required fields and accept the terms.'
+          : 'We could not pin your location. Tap "Use my current location" or check the area name.'
+      );
       return;
     }
 
