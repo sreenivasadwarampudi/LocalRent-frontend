@@ -8,6 +8,12 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/png" href="logo.png" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    window.fbAsyncInit = function () {
+      FB.init({ appId: '802241856317211', cookie: true, xfbml: false, version: 'v23.0' });
+    };
+  </script>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
 </head>
 <body>
   <app-root></app-root>

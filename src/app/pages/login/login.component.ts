@@ -1,11 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject,NgZone,signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
 import { PHONE_PATTERN } from '../../validators';
 
+
 declare const google: any;
+declare const FB: any; 
 
 @Component({
   selector: 'app-login',
@@ -18,8 +20,12 @@ export class LoginComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
+  private readonly zone = inject(NgZone);
+
   readonly error = signal<string | null>(null);
   readonly loading = signal(false);
+
+                                                
 
   readonly form = this.fb.nonNullable.group({
     phone: ['', [Validators.required, Validators.pattern(PHONE_PATTERN)]],
@@ -107,4 +113,37 @@ export class LoginComponent {
       }
     });
   }
+
+loginWithFacebook(): void {
+  if (typeof FB === 'undefined') {
+    this.error.set('Facebook SDK not loaded. Please refresh the page.');
+    return;
+  }
+  // Must be called directly from the click handler, or popup blockers will stop it
+  FB.login(
+    (response: any) => {
+      this.zone.run(() => {
+        const token = response?.authResponse?.accessToken;
+        if (!token) {
+          this.error.set('Facebook login was cancelled.');
+          return;
+        }
+        this.loading.set(true);
+        this.error.set(null);
+        this.auth.facebookLogin(token).subscribe({
+          next: () => {
+            this.loading.set(false);
+            void this.router.navigate(['/my-listings']);
+          },
+          error: (err) => {
+            this.loading.set(false);
+            this.error.set(err?.error?.message ?? 'Facebook login failed');
+          }
+        });
+      });
+    },
+    { scope: 'public_profile,email' }
+  );
+}
+
 }
