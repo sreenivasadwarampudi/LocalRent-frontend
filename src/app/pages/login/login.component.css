@@ -1,0 +1,213 @@
+
+/* Login card */
+.login-card {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  padding: 24px 20px;
+  background: #fff;
+  border: 1px solid #dce5e2;
+  border-radius: 12px;
+}
+
+/* Social login buttons */
+.social-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 7px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.google-btn {
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.facebook-login-btn {
+  background: #1877f2;
+  color: #fff;
+  border: 1px solid #1877f2;
+}
+
+.social-login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* OR divider */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  color: #888;
+}
+
+.divider > span:first-child,
+.divider > span:last-child {
+  flex: 1;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.divider-label {
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+/* Main login button */
+.login-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 18px;
+  margin-top: 12px;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 700;
+  transition: background-color 0.2s ease;
+}
+
+.login-submit-btn:disabled {
+  opacity: 0.85;
+  cursor: wait;
+}
+
+/* Full-screen overlay */
+.login-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 20px;
+  background: rgba(12, 35, 31, 0.60);
+  backdrop-filter: blur(3px);
+}
+
+/* Popup */
+.login-loading-popup {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 400px;
+  padding: 32px 26px;
+  text-align: center;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.22);
+  animation: popup-appear 0.25s ease-out;
+}
+
+.login-loading-popup h2 {
+  margin: 18px 0 12px;
+  color: #153b32;
+  font-size: 23px;
+}
+
+.loading-message {
+  margin: 0;
+  color: #374741;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.loading-message strong {
+  color: #087f5b;
+}
+
+.loading-submessage {
+  margin: 14px 0 0;
+  color: #697872;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Large loading spinner */
+.login-spinner {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto;
+  border: 5px solid #dcefe8;
+  border-top-color: #16876b;
+  border-radius: 50%;
+  animation: login-spin 0.8s linear infinite;
+}
+
+.button-spinner {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: login-spin 0.8s linear infinite;
+}
+
+/* Signup link */
+.signup-hint {
+  margin-top: 18px;
+  line-height: 1.6;
+}
+
+/* Animations */
+@keyframes login-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes popup-appear {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 20px 16px;
+  }
+
+  .login-loading-popup {
+    padding: 28px 20px;
+  }
+
+  .login-loading-popup h2 {
+    font-size: 21px;
+  }
+
+  .loading-message {
+    font-size: 15px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .login-spinner,
+  .button-spinner {
+    animation-duration: 2s;
+  }
+
+  .login-loading-popup {
+    animation: none;
+  }
+}

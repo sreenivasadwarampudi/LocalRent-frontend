@@ -43,6 +43,12 @@ export class AuthService {
       .pipe(tap((response) => this.persist(response)));
   }
 
+  facebookLogin(accessToken: string): Observable<AuthResponse> {
+  return this.http
+    .post<AuthResponse>(`${environment.apiBaseUrl}/auth/facebook`, { accessToken })
+    .pipe(tap((response) => this.persist(response)));
+}
+
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
